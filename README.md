@@ -1,4 +1,4 @@
-# TD-activit-API-techno-web
+# API REST Express avec TypeScript
 
 Ce projet est une API REST simple développée avec Express.js et TypeScript, permettant la gestion des utilisateurs avec un stockage en mémoire.
 
@@ -9,6 +9,7 @@ Ce projet est une API REST simple développée avec Express.js et TypeScript, pe
 - Validation des données
 - Stockage en mémoire
 - TypeScript pour un typage fort
+- Variables d'environnement avec dotenv
 
 ## 📋 Prérequis
 
@@ -28,7 +29,13 @@ cd td6
 npm install
 ```
 
-3. Lancez le serveur de développement :
+3. Configurez les variables d'environnement :
+```bash
+cp .env.example .env
+# Modifiez le fichier .env selon vos besoins
+```
+
+4. Lancez le serveur de développement :
 ```bash
 npm run dev
 ```
@@ -41,6 +48,18 @@ Le serveur démarre par défaut sur http://localhost:3000
 - Description : Récupère la liste de tous les utilisateurs
 - Réponse : Liste des utilisateurs au format JSON
 
+Test avec curl :
+```bash
+curl http://localhost:3000/users
+```
+
+Réponse attendue :
+```json
+{
+  "users": []
+}
+```
+
 ### POST /users
 - Description : Ajoute un nouvel utilisateur
 - Corps de la requête :
@@ -52,18 +71,34 @@ Le serveur démarre par défaut sur http://localhost:3000
   ```
 - Réponse : Message de confirmation avec l'email de l'utilisateur
 
+Test avec curl :
+```bash
+curl -X POST http://localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "john@example.com"}'
+```
+
+Réponse attendue :
+```json
+{
+  "message": "Utilisateur John Doe ajouté avec succès !",
+  "email": "john@example.com"
+}
+```
+
 ## 🔧 Structure du Projet
 
 ```
 .
-├── nodemon.json         # Configuration de nodemon pour le rechargement automatique
-├── package.json        # Dépendances et scripts npm
-├── tsconfig.json      # Configuration TypeScript
+├── .env              # Variables d'environnement
+├── nodemon.json      # Configuration de nodemon
+├── package.json      # Dépendances et scripts
+├── tsconfig.json     # Configuration TypeScript
 └── src/
-    ├── index.ts       # Point d'entrée de l'application
-    ├── controllers/   # Logique métier
+    ├── index.ts      # Point d'entrée
+    ├── controllers/  # Logique métier
     │   └── user.controller.ts
-    └── routes/       # Définition des routes
+    └── routes/      # Définition des routes
         └── user.routes.ts
 ```
 
@@ -71,19 +106,45 @@ Le serveur démarre par défaut sur http://localhost:3000
 
 - Express.js - Framework web
 - TypeScript - Superset JavaScript typé
-- Nodemon - Rechargement automatique en développement
+- Nodemon - Rechargement automatique
 - ts-node - Exécution de TypeScript
+- dotenv - Gestion des variables d'environnement
 
 ## 📝 Scripts Disponibles
 
-- `npm run dev` : Lance le serveur en mode développement avec rechargement automatique
+- `npm run dev` : Lance le serveur en mode développement
 - `npm start` : Lance le serveur en mode production
-- `npm run build` : Compile le code TypeScript en JavaScript
+- `npm run build` : Compile le code TypeScript
 
-## 🤝 Contribution
+## ✅ Tests et Validation
 
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou soumettre une pull request.
+Pour tester l'API complètement, exécutez la séquence suivante :
 
-## 📄 Licence
+1. Vérifiez que le serveur est en marche :
+```bash
+curl http://localhost:3000
+```
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+2. Récupérez la liste des utilisateurs (vide au début) :
+```bash
+curl http://localhost:3000/users
+```
+
+3. Ajoutez un utilisateur :
+```bash
+curl -X POST http://localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "john@example.com"}'
+```
+
+4. Vérifiez que l'utilisateur a été ajouté :
+```bash
+curl http://localhost:3000/users
+```
+
+5. Testez la validation des données (devrait échouer) :
+```bash
+curl -X POST http://localhost:3000/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe"}'
+```
